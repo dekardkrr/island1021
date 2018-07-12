@@ -1,5 +1,5 @@
 pragma solidity ^0.4.24;
-contract contrackZu {
+contract contracktZu {
     
     
     struct Prefs{
@@ -26,6 +26,10 @@ contract contrackZu {
         return prefs[msg.sender].kn;
     }
     
+    function getInfo(uint256 _kn) public view returns (int) {
+        return kn_list[_kn];
+        
+    }
 
     function changeCadCost(uint256 _kn,int _newCost) public {
         // изменение характеристики
