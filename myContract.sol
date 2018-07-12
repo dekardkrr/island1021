@@ -14,6 +14,7 @@ contract contracktZu {
     
     uint data = 0;
      event Transfer(address,address,uint);
+     event externalTransfer(address,address,uint);
 
     function create(uint256 _kn, int _kadCost) public returns (uint) {
         // создается новый ЗУ
@@ -47,6 +48,12 @@ contract contracktZu {
         require(ownerOf[_kn] == msg.sender);
         ownerOf[_kn] = address (0);
         
+    }
+    
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId) public{
+        require(ownerOf[_tokenId] == _from);
+        ownerOf[_tokenId] = _to;
+        emit externalTransfer(_from, _to, _tokenId);
     }
 
 }
