@@ -1,6 +1,11 @@
 pragma solidity ^0.4.24;
+// import "./AdressUtils.sol";
+import "./ERC721Receiver.sol";
+
+
 contract contracktZu {
     
+    bytes4 private constant ERC721_RECEIVED = 0x150b7a02;
     
     struct Prefs{
         uint256 kn; // уникальный ключ
@@ -16,7 +21,9 @@ contract contracktZu {
      event Transfer(address,address,uint);
      event externalTransfer(address,address,uint);
 
-    function create(uint256 _kn, int _kadCost) public returns (uint) {
+    
+
+    function create(uint256 _kn, int _kadCost) public returns (uint256) {
         // создается новый ЗУ
         
         prefs[msg.sender].kn = _kn;
@@ -50,10 +57,31 @@ contract contracktZu {
         
     }
     
-    function safeTransferFrom(address _from, address _to, uint256 _tokenId) public{
-        require(ownerOf[_tokenId] == _from);
-        ownerOf[_tokenId] = _to;
-        emit externalTransfer(_from, _to, _tokenId);
+    function safeTransferFrom(address _from, address _to, uint256 _tokenId) 
+    public
+  {
+    require(ownerOf[_tokenId] == _from);
+    safeTransferFrom(_from, _to, _tokenId);
+
+    require(checkAndCallSafeTransfer(_from, _to, _tokenId));
+  }
+  
+  function isContract(address addr) internal returns (bool) {
+    uint size;
+    assembly { size := extcodesize(addr) }
+    return size > 0;
     }
+  
+  function checkAndCallSafeTransfer(address _from, address _to, uint256 _tokenId) internal returns (bool){
+    if ( !isContract(_to)) {
+      return true;
+    }
+    bytes4 retval = ERC721Receiver(_to).onERC721Received(msg.sender, _from, _tokenId, "");
+    return (retval == ERC721_RECEIVED);
+  }
+
+    
+    
+   
 
 }
