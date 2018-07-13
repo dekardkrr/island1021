@@ -1,6 +1,37 @@
 pragma solidity ^0.4.24;
+// import "./ERC721Receiver.sol";
 // import "./AdressUtils.sol";
-import "./ERC721Receiver.sol";
+
+contract ERC721Receiver {
+  /**
+   * @dev Magic value to be returned upon successful reception of an NFT
+   *  Equals to `bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))`,
+   *  which can be also obtained as `ERC721Receiver(0).onERC721Received.selector`
+   */
+  bytes4 internal constant ERC721_RECEIVED = 0x150b7a02;
+
+  /**
+   * @notice Handle the receipt of an NFT
+   * @dev The ERC721 smart contract calls this function on the recipient
+   * after a `safetransfer`. This function MAY throw to revert and reject the
+   * transfer. Return of other than the magic value MUST result in the 
+   * transaction being reverted.
+   * Note: the contract address is always the message sender.
+   * @param _operator The address which called `safeTransferFrom` function
+   * @param _from The address which previously owned the token
+   * @param _tokenId The NFT identifier which is being transfered
+   * @param _data Additional data with no specified format
+   * @return `bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))`
+   */
+  function onERC721Received(
+    address _operator,
+    address _from,
+    uint256 _tokenId,
+    bytes _data
+  )
+    public
+    returns(bytes4);
+}
 
 
 contract contracktZu {
@@ -23,15 +54,11 @@ contract contracktZu {
 
     
 
-    function create(uint256 _kn, int _kadCost) public returns (uint256) {
+    function create(uint256 _kn, int _kadCost) public{
         // создается новый ЗУ
-        
-        prefs[msg.sender].kn = _kn;
-        prefs[msg.sender].kadCost = _kadCost;
-        kn_list[prefs[msg.sender].kn] = prefs[msg.sender].kadCost;
-        ownerOf[prefs[msg.sender].kn] = msg.sender;
-        
-        return prefs[msg.sender].kn;
+        kn_list[_kn] = _kadCost;
+        ownerOf[_kn] = msg.sender;
+        //return _kn;
     }
     
     function getInfo(uint256 _kn) public view returns (int) {
